@@ -490,5 +490,11 @@ export const api = {
     return apiFetch<{ success: boolean }>(`/api/admin/feedback/${id}`, {
       method: 'DELETE'
     });
+  },
+
+  clearAllData: async () => {
+    return apiFetch<{ success: boolean; message: string; attemptsCount: number; submissionsCount: number; playersCount: number }>('/api/admin/clear-all-data', {
+      method: 'POST'
+    });
   }
 };

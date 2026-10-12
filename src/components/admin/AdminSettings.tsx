@@ -11,7 +11,9 @@ import {
   HelpCircle,
   Database,
   RefreshCw,
-  ExternalLink
+  ExternalLink,
+  Trash2,
+  AlertTriangle
 } from 'lucide-react';
 import { GameSettings } from '../../types/game.ts';
 import { api } from '../../services/api.ts';
@@ -37,6 +39,29 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
   const [supabaseAnonKey, setSupabaseAnonKey] = useState(storedSb.anonKey);
   const [isTestingSb, setIsTestingSb] = useState(false);
   const [sbTestResult, setSbTestResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // Clear All Data state
+  const [showClearModal, setShowClearModal] = useState(false);
+  const [isClearingData, setIsClearingData] = useState(false);
+  const [clearNotice, setClearNotice] = useState<string | null>(null);
+
+  const handleClearAllData = async () => {
+    setIsClearingData(true);
+    sounds.playClick();
+    try {
+      const res = await api.clearAllData();
+      sounds.playCorrect();
+      setClearNotice(res.message || 'All competition attempts, participant submissions, leaderboard records, and progress successfully cleared!');
+      setShowClearModal(false);
+      onRefresh();
+      setTimeout(() => setClearNotice(null), 6000);
+    } catch (err: any) {
+      sounds.playWrong();
+      alert(`Clear failed: ${err.message}`);
+    } finally {
+      setIsClearingData(false);
+    }
+  };
 
   const handleTestSupabase = async () => {
     setIsTestingSb(true);
@@ -452,13 +477,105 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           <button
             type="submit"
             disabled={isSaving}
-            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-xl shadow-cyan-600/20 transition disabled:opacity-50"
+            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-xl shadow-cyan-600/20 transition disabled:opacity-50 cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'Saving Directives...' : 'Save & Publish Bureau Directives'}</span>
           </button>
         </div>
       </form>
+
+      {/* Danger Zone: Clear All Data */}
+      <div className="p-6 rounded-2xl bg-rose-950/20 border border-rose-900/60 shadow-xl space-y-4 text-xs">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-rose-400 font-bold text-sm uppercase tracking-wide">
+            <AlertTriangle className="w-4 h-4" />
+            <span>5. Danger Zone: Clear Competition & Live Data</span>
+          </div>
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-950 text-rose-300 border border-rose-800">
+            IRREVERSIBLE ACTION
+          </span>
+        </div>
+
+        <p className="text-slate-400 text-xs">
+          Clear all live participant submissions, player attempts, symposium leaderboard entries, and player clearance progress. Case levels, questions, and posters remain preserved for new competitors.
+        </p>
+
+        {clearNotice && (
+          <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2 animate-fade-in">
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{clearNotice}</span>
+          </div>
+        )}
+
+        <div className="pt-2 flex items-center justify-between">
+          <div className="text-[11px] text-slate-400 font-mono">
+            Status: Clean state ready for symposium / tournament launch.
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              sounds.playClick();
+              setShowClearModal(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/20 transition cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear All Data</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Clear All Data Confirmation Modal */}
+      {showClearModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-rose-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scale-up">
+            <div className="flex items-center gap-3 text-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-800 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rose-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base text-white">Clear All Live Data?</h3>
+                <p className="text-xs text-rose-300">Confirmation Required</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Are you sure you want to clear <strong>ALL</strong> live investigation records? This will permanently wipe:
+            </p>
+
+            <ul className="text-xs text-slate-400 space-y-1.5 list-disc list-inside bg-slate-950/60 p-3 rounded-xl border border-slate-800 font-mono">
+              <li>All college team candidate submissions</li>
+              <li>All player investigation attempts and timers</li>
+              <li>All leaderboard ranks and participant scores</li>
+              <li>All player clearance unlocks and progress logs</li>
+            </ul>
+
+            <div className="flex items-center justify-end gap-3 pt-3">
+              <button
+                type="button"
+                disabled={isClearingData}
+                onClick={() => {
+                  sounds.playClick();
+                  setShowClearModal(false);
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isClearingData}
+                onClick={handleClearAllData}
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition disabled:opacity-50 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{isClearingData ? 'Clearing All Data...' : 'Yes, Clear All Data'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

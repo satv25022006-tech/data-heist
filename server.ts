@@ -527,6 +527,17 @@ app.delete('/api/admin/participant-submissions', authMiddleware(writeAdminRoles)
   res.json({ success: true, count });
 });
 
+// Clear All Data Endpoint (Resets attempts, candidate submissions, player scores, leaderboard, and progress)
+app.post('/api/admin/clear-all-data', authMiddleware(writeAdminRoles), (req: AuthenticatedRequest, res) => {
+  const result = db.clearAllData({ id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
+  res.json({ success: true, ...result, message: 'All competition data, attempts, submissions, and leaderboard records cleared successfully.' });
+});
+
+app.delete('/api/admin/clear-all-data', authMiddleware(writeAdminRoles), (req: AuthenticatedRequest, res) => {
+  const result = db.clearAllData({ id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
+  res.json({ success: true, ...result, message: 'All competition data, attempts, submissions, and leaderboard records cleared successfully.' });
+});
+
 // Admin Games Management (Cases / Game Modules)
 app.get('/api/admin/games', authMiddleware(adminRoles), (_req, res) => {
   res.json(db.getGames());

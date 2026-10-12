@@ -121,42 +121,7 @@ export const INITIAL_GAMES: GameCard[] = [
   }
 ];
 
-export const INITIAL_PARTICIPANTS: ParticipantSubmission[] = [
-  {
-    id: 'sub_01',
-    name: 'Aravind Kumar',
-    registerNumber: '21CS042',
-    collegeName: 'MIT College of Engineering',
-    teamName: 'CyberKnights',
-    gameTitle: 'DATA HEIST: Cyber Forensic Intrusion',
-    totalScore: 480,
-    totalStars: 6,
-    accuracyPercentage: 88.9,
-    totalTimeSpentSeconds: 142,
-    totalTimeSavedSeconds: 38,
-    completedLevelsCount: 3,
-    feedback: 'Incredible forensic case! The network intrusion posters and Caesar cipher questions were realistic and intellectually challenging.',
-    rating: 5,
-    submittedAt: '2026-01-05T14:22:00.000Z'
-  },
-  {
-    id: 'sub_02',
-    name: 'Priya Sharma',
-    registerNumber: '21IT089',
-    collegeName: 'PSG Institute of Technology',
-    teamName: 'ByteHackers',
-    gameTitle: 'DATA HEIST: Cyber Forensic Intrusion',
-    totalScore: 435,
-    totalStars: 5,
-    accuracyPercentage: 85.0,
-    totalTimeSpentSeconds: 165,
-    totalTimeSavedSeconds: 25,
-    completedLevelsCount: 3,
-    feedback: 'The 30-second mission briefing timer and Tamil translation support made this the most exciting event at the symposium!',
-    rating: 5,
-    submittedAt: '2026-01-05T15:10:00.000Z'
-  }
-];
+export const INITIAL_PARTICIPANTS: ParticipantSubmission[] = [];
 
 interface DatabaseSchema {
   settings: GameSettings;
@@ -214,15 +179,15 @@ export class DatabaseManager {
         return {
           settings: parsed.settings || DEFAULT_SETTINGS,
           admins: parsed.admins || INITIAL_ADMINS,
-          players: parsed.players || INITIAL_PLAYERS,
+          players: Array.isArray(parsed.players) ? parsed.players : [],
           games: parsed.games || INITIAL_GAMES,
           levels: levelsList,
           questions: parsed.questions || INITIAL_QUESTIONS,
           posters: parsed.posters || [],
-          attempts: parsed.attempts || [],
+          attempts: Array.isArray(parsed.attempts) ? parsed.attempts : [],
           progress: parsed.progress || {},
-          participantSubmissions: parsed.participantSubmissions || INITIAL_PARTICIPANTS,
-          auditLogs: parsed.auditLogs || INITIAL_AUDIT_LOGS
+          participantSubmissions: Array.isArray(parsed.participantSubmissions) ? parsed.participantSubmissions : [],
+          auditLogs: Array.isArray(parsed.auditLogs) ? parsed.auditLogs : []
         };
       } catch (err) {
         console.error('Failed to parse database.json, reseeding default dataset.', err);
@@ -1245,5 +1210,32 @@ export class DatabaseManager {
     target.rating = undefined;
     this.saveData();
     return true;
+  }
+
+  clearAllData(actor?: { id: string; name: string; role: UserRole }) {
+    const attemptsCount = (this.data.attempts || []).length;
+    const submissionsCount = (this.data.participantSubmissions || []).length;
+    const playersCount = (this.data.players || []).length;
+
+    this.data.attempts = [];
+    this.data.participantSubmissions = [];
+    this.data.players = [];
+    this.data.progress = {};
+    this.data.auditLogs = [];
+
+    if (actor) {
+      this.logAudit(actor, 'ALL_DATA_CLEARED', 'system', 'all', {
+        clearedAttempts: attemptsCount,
+        clearedSubmissions: submissionsCount,
+        clearedPlayers: playersCount
+      });
+    }
+
+    this.saveData();
+    return {
+      attemptsCount,
+      submissionsCount,
+      playersCount
+    };
   }
 }
