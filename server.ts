@@ -6,32 +6,39 @@ import multer from 'multer';
 import { DatabaseManager } from './server/db.ts';
 import { ensureUploadsAndPosters } from './server/generatePosters.ts';
 import { INITIAL_ADMINS } from './server/seedData.ts';
-import { UserRole, UserProfile } from './src/types/game.ts';
+import type { UserRole, UserProfile } from './src/types/game.ts';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const isVercel = Boolean(process.env.VERCEL);
 const rootDir = process.cwd();
-const dataBaseDir = isVercel ? os.tmpdir() : rootDir;
 
-// Initialize posters and storage safely
-try {
-  ensureUploadsAndPosters(rootDir);
-} catch (e) {
-  console.warn('ensureUploadsAndPosters skipped in serverless environment:', e);
+// Initialize posters and storage safely (skip on read-only serverless environment)
+if (!isVercel) {
+  try {
+    ensureUploadsAndPosters(rootDir);
+  } catch (e) {
+    console.warn('ensureUploadsAndPosters skipped in serverless environment:', e);
+  }
 }
 
-// Initialize DB manager
-const db = new DatabaseManager(dataBaseDir);
+// Initialize DB manager (reads bundled data/database.json, writes to /tmp in serverless)
+const db = new DatabaseManager(rootDir);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static uploads
 app.use('/uploads', express.static(path.join(rootDir, 'uploads')));
+app.use('/uploads', express.static(path.join(rootDir, 'public', 'uploads')));
+app.use('/api/uploads', express.static(path.join(rootDir, 'uploads')));
+app.use('/api/uploads', express.static(path.join(rootDir, 'public', 'uploads')));
 
 // --- MULTER STORAGE & VALIDATION ---
-let uploadDir = path.join(dataBaseDir, 'uploads', 'question-posters');
+let uploadDir = isVercel 
+  ? path.join(os.tmpdir(), 'uploads', 'question-posters')
+  : path.join(rootDir, 'uploads', 'question-posters');
+
 try {
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -44,6 +51,10 @@ try {
     }
   } catch {}
 }
+
+// Serve any runtime dynamic uploads saved to tmpdir as well
+app.use('/uploads/question-posters', express.static(uploadDir));
+app.use('/api/uploads/question-posters', express.static(uploadDir));
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {

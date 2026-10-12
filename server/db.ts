@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { 
+import type { 
   GameSettings, 
   Level, 
   Question, 
@@ -142,28 +142,41 @@ export class DatabaseManager {
   private data: DatabaseSchema;
   private sessionTokens: Map<string, { userId: string; role: UserRole; expiresAt: number }> = new Map();
 
-  constructor(rootDir: string) {
-    let dataDir = path.join(rootDir, 'data');
-    try {
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
+  constructor(rootDir: string = process.cwd()) {
+    const bundledPath = path.join(rootDir, 'data', 'database.json');
+    const tmpDataDir = path.join(os.tmpdir(), 'detective_data');
+    const tmpDbPath = path.join(tmpDataDir, 'database.json');
+
+    if (process.env.VERCEL) {
+      this.dbPath = tmpDbPath;
+      try {
+        if (!fs.existsSync(tmpDataDir)) {
+          fs.mkdirSync(tmpDataDir, { recursive: true });
+        }
+        if (!fs.existsSync(tmpDbPath) && fs.existsSync(bundledPath)) {
+          fs.copyFileSync(bundledPath, tmpDbPath);
+        }
+      } catch (err) {
+        console.warn('Vercel tmp DB init notice:', err);
       }
-    } catch {
-      dataDir = path.join(os.tmpdir(), 'detective_data');
+    } else {
+      let dataDir = path.join(rootDir, 'data');
       try {
         if (!fs.existsSync(dataDir)) {
           fs.mkdirSync(dataDir, { recursive: true });
         }
       } catch {}
+      this.dbPath = path.join(dataDir, 'database.json');
     }
-    this.dbPath = path.join(dataDir, 'database.json');
-    this.data = this.loadOrSeedDatabase();
+    this.data = this.loadOrSeedDatabase(bundledPath);
   }
 
-  private loadOrSeedDatabase(): DatabaseSchema {
-    if (fs.existsSync(this.dbPath)) {
+  private loadOrSeedDatabase(bundledPath?: string): DatabaseSchema {
+    const candidatePath = fs.existsSync(this.dbPath) ? this.dbPath : (bundledPath && fs.existsSync(bundledPath) ? bundledPath : null);
+
+    if (candidatePath) {
       try {
-        const fileContent = fs.readFileSync(this.dbPath, 'utf8');
+        const fileContent = fs.readFileSync(candidatePath, 'utf8');
         const parsed = JSON.parse(fileContent);
         // Ensure all required collections exist
         const levelsList = (parsed.levels || INITIAL_LEVELS).map((lvl: any, index: number) => {
@@ -176,7 +189,7 @@ export class DatabaseManager {
           return lvl;
         });
 
-        return {
+        const loaded: DatabaseSchema = {
           settings: parsed.settings || DEFAULT_SETTINGS,
           admins: parsed.admins || INITIAL_ADMINS,
           players: Array.isArray(parsed.players) ? parsed.players : [],
@@ -189,6 +202,13 @@ export class DatabaseManager {
           participantSubmissions: Array.isArray(parsed.participantSubmissions) ? parsed.participantSubmissions : [],
           auditLogs: Array.isArray(parsed.auditLogs) ? parsed.auditLogs : []
         };
+
+        // If we loaded from bundledPath instead of tmp, attempt to cache into this.dbPath
+        if (candidatePath !== this.dbPath) {
+          this.saveData(loaded);
+        }
+
+        return loaded;
       } catch (err) {
         console.error('Failed to parse database.json, reseeding default dataset.', err);
       }
@@ -248,11 +268,15 @@ export class DatabaseManager {
 
   private saveData(dataToSave: DatabaseSchema = this.data) {
     try {
+      const dir = path.dirname(this.dbPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       const tempPath = `${this.dbPath}.tmp`;
       fs.writeFileSync(tempPath, JSON.stringify(dataToSave, null, 2), 'utf8');
       fs.renameSync(tempPath, this.dbPath);
     } catch (err) {
-      console.error('Error saving database to file:', err);
+      console.warn('Notice: Could not persist database to disk in this environment:', err);
     }
   }
 

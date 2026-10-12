@@ -1,8 +1,8 @@
-import { GameSettings, Level, Question, UserProfile, LeaderboardEntry, AuditLog } from '../src/types/game.ts';
+import type { GameSettings, Level, Question, UserProfile, LeaderboardEntry, AuditLog } from '../src/types/game.ts';
 
 export const DEFAULT_SETTINGS: GameSettings = {
   id: 'global_settings',
-  gameTitle: 'SMIT CENTRAL FORENSIC CRIME BUREAU',
+  gameTitle: 'DATA HEIST',
   gameDescription: 'Crack cryptographic mysteries, inspect forensic evidence posters, decode syndicate ciphers, and neutralize international threats.',
   logoUrl: '/infoxtreme_logo.jpg',
   theme: 'noir-cyber',

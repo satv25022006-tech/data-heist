@@ -46,7 +46,7 @@ import {
   GameCard,
   ParticipantSubmission
 } from './types/game.ts';
-import { DEFAULT_SETTINGS, DEFAULT_GAMES, DEFAULT_LEVELS } from './data/defaultData.ts';
+import { DEFAULT_SETTINGS, DEFAULT_GAMES, DEFAULT_LEVELS, DEFAULT_QUESTIONS } from './data/defaultData.ts';
 import { api, authStorage } from './services/api.ts';
 import { sounds, TRANSLATIONS } from './services/soundAndLang.ts';
 import { Navbar } from './components/Navbar.tsx';
@@ -96,7 +96,7 @@ export default function App() {
   const [games, setGames] = useState<GameCard[]>(DEFAULT_GAMES);
   const [selectedGame, setSelectedGame] = useState<GameCard | null>(DEFAULT_GAMES[0] || null);
   const [levels, setLevels] = useState<(Level & { isUnlocked: boolean; lockReason?: string; isCompleted: boolean; highestScore: number; highestStars: number })[]>(DEFAULT_LEVELS);
-  const [allQuestions, setAllQuestions] = useState<Question[]>([]);
+  const [allQuestions, setAllQuestions] = useState<Question[]>(DEFAULT_QUESTIONS);
   
   // Admin Data Collections
   const [adminGames, setAdminGames] = useState<GameCard[]>([]);
@@ -135,11 +135,18 @@ export default function App() {
         if (!selectedGame) {
           setSelectedGame(gamesList[0]);
         }
+      } else {
+        setGames(DEFAULT_GAMES);
+        if (!selectedGame) {
+          setSelectedGame(DEFAULT_GAMES[0]);
+        }
       }
       if (levelsList && levelsList.length > 0) {
         setLevels(levelsList);
+      } else {
+        setLevels(DEFAULT_LEVELS);
       }
-      if (board) {
+      if (board && Array.isArray(board)) {
         setLeaderboard(board);
       }
       if (me) {
@@ -147,6 +154,8 @@ export default function App() {
       }
       if (qList && qList.length > 0) {
         setAllQuestions(qList);
+      } else {
+        setAllQuestions(DEFAULT_QUESTIONS);
       }
     } catch (err) {
       console.warn('Initialization error:', err);

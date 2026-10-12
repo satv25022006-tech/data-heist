@@ -64,16 +64,25 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     headers
   });
 
+  const contentType = response.headers.get('content-type') || '';
+  const text = await response.text();
+
   if (!response.ok) {
     let errorMsg = `HTTP Error ${response.status}`;
     try {
-      const errorJson = await response.json();
-      if (errorJson.error) errorMsg = errorJson.error;
+      if (text && !text.trim().startsWith('<')) {
+        const errorJson = JSON.parse(text);
+        if (errorJson.error) errorMsg = errorJson.error;
+      }
     } catch {}
     throw new Error(errorMsg);
   }
 
-  return response.json();
+  if (contentType.includes('text/html') || text.trim().startsWith('<')) {
+    throw new Error('Received HTML response instead of JSON payload');
+  }
+
+  return JSON.parse(text);
 }
 
 export const api = {

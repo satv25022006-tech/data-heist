@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%">
+      <rect width="900" height="500" fill="#030712"/>
+      <rect x="40" y="30" width="820" height="45" rx="6" fill="#0f172a" stroke="#1e293b"/>
+      <text x="60" y="58" fill="#10b981" font-family="monospace" font-size="16" font-weight="bold">SUBTERRANEAN BIOMETRIC VAULT // OPTICAL LASER TRIPWIRE MATRIX</text>
+
+      <!-- Laser Grid Schematics -->
+      <rect x="60" y="95" width="420" height="250" rx="8" fill="#020617" stroke="#1e293b"/>
+      
+      <!-- Red lasers -->
+      <line x1="80" y1="130" x2="460" y2="130" stroke="#ef4444" stroke-width="2"/>
+      <line x1="80" y1="210" x2="460" y2="210" stroke="#ef4444" stroke-width="2"/>
+      <!-- Green lasers -->
+      <line x1="80" y1="170" x2="460" y2="170" stroke="#22c55e" stroke-width="3"/>
+      <line x1="80" y1="270" x2="460" y2="270" stroke="#22c55e" stroke-width="3"/>
+      <!-- Blue lasers -->
+      <line x1="160" y1="105" x2="160" y2="330" stroke="#3b82f6" stroke-width="2"/>
+      <line x1="360" y1="105" x2="360" y2="330" stroke="#3b82f6" stroke-width="2"/>
+
+      <!-- Target Node Delta-9 highlight -->
+      <circle cx="260" cy="170" r="14" fill="#052e16" stroke="#22c55e" stroke-width="3"/>
+      <text x="245" y="175" fill="#4ade80" font-family="monospace" font-size="11" font-weight="bold">Δ-9</text>
+
+      <!-- Right control panel -->
+      <rect x="500" y="95" width="340" height="250" rx="8" fill="#091427" stroke="#1e3a8a"/>
+      <text x="520" y="125" fill="#60a5fa" font-family="monospace" font-size="13" font-weight="bold">NODE PARITY DIRECTORY</text>
+      
+      <rect x="520" y="140" width="300" height="40" rx="4" fill="#1e293b"/>
+      <text x="535" y="165" fill="#94a3b8" font-family="monospace" font-size="11">NODE ALPHA: HIGH VOLTAGE GRID (DO NOT GROUND)</text>
+
+      <!-- Delta 9 highlight box -->
+      <rect x="520" y="190" width="300" height="75" rx="4" fill="#064e3b" stroke="#22c55e" stroke-width="2"/>
+      <text x="535" y="215" fill="#86efac" font-family="monospace" font-size="12" font-weight="bold">GROUND NODE DELTA-9 (532nm)</text>
+      <text x="535" y="235" fill="#ffffff" font-family="monospace" font-size="11">TARGET LOOP: GREEN PHOTODIODE</text>
+      <text x="535" y="255" fill="#fde047" font-family="monospace" font-size="10">BYPASS DURATION: 15 SEC WINDOW</text>
+
+      <rect x="520" y="275" width="300" height="40" rx="4" fill="#1e293b"/>
+      <text x="535" y="300" fill="#94a3b8" font-family="monospace" font-size="11">NODE OMEGA: AUDIBLE KLAXON SIREN</text>
+
+      <!-- Footer terminal -->
+      <rect x="40" y="365" width="820" height="100" rx="6" fill="#020617" stroke="#1e293b"/>
+      <text x="60" y="395" fill="#4ade80" font-family="monospace" font-size="12">PROTOCOL: Grounding Node Delta-9 opens a dark corridor for Vault Sector 4.</text>
+      <text x="60" y="420" fill="#94a3b8" font-family="monospace" font-size="12">WARNING: Any error triggers silent lockdown and fills chamber with Halon gas.</text>
+    </svg>

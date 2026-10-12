@@ -43,8 +43,8 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
   // Active Selected Game Card
   const [activeGameId, setActiveGameId] = useState<string>(() => games[0]?.id || 'game-data-heist');
   
-  // Selected Level Difficulty Tab: 'easy' | 'medium' | 'hard' | 'all'
-  const [activeDifficulty, setActiveDifficulty] = useState<LevelDifficulty | 'all'>('easy');
+  // Selected Level Difficulty Tab: 'easy' | 'medium' | 'hard'
+  const [activeDifficulty, setActiveDifficulty] = useState<LevelDifficulty>('easy');
 
   // Case Module Edit/Create Modal
   const [isCaseModalOpen, setIsCaseModalOpen] = useState(false);
@@ -133,17 +133,12 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
     return levels.find(l => l.difficulty === diff);
   };
 
-  const currentLevel = activeDifficulty !== 'all' ? getLevelForDifficulty(activeDifficulty as LevelDifficulty) : undefined;
+  const currentLevel = getLevelForDifficulty(activeDifficulty);
 
-  // Filter questions for the current level / all
-  const gameLevelIds = new Set(levels.filter(l => l.gameId === activeGame?.id).map(l => l.id));
+  // Filter questions for the current level
   const currentQuestions = questions
     .filter(q => {
-      if (activeDifficulty === 'all') {
-        if (gameLevelIds.size > 0) return gameLevelIds.has(q.levelId);
-        return true;
-      }
-      const lvl = getLevelForDifficulty(activeDifficulty as LevelDifficulty);
+      const lvl = getLevelForDifficulty(activeDifficulty);
       if (lvl) {
         return q.levelId === lvl.id;
       }
@@ -188,16 +183,15 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
   };
 
   // --- QUESTION HANDLERS ---
-  const handleOpenAddQuestion = async (targetDiff: LevelDifficulty | 'all' = activeDifficulty === 'all' ? 'easy' : activeDifficulty) => {
+  const handleOpenAddQuestion = async (targetDiff: LevelDifficulty = activeDifficulty) => {
     sounds.playClick();
-    const actualDiff = targetDiff === 'all' ? 'easy' : targetDiff;
-    const lvl = await ensureLevelExists(actualDiff);
+    const lvl = await ensureLevelExists(targetDiff);
     const existingQs = questions.filter(q => q.levelId === lvl.id);
     const nextOrder = existingQs.length + 1;
 
     setEditingQuestion({
       levelId: lvl.id,
-      difficulty: actualDiff,
+      difficulty: targetDiff,
       displayOrder: nextOrder,
       title: `Question ${nextOrder}: Forensic Exhibit #${nextOrder}`,
       text: '',
@@ -206,9 +200,9 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
       optionC: '',
       optionD: '',
       correctAnswerKey: 'A',
-      timerSeconds: actualDiff === 'easy' ? 45 : actualDiff === 'medium' ? 30 : 20,
+      timerSeconds: targetDiff === 'easy' ? 45 : targetDiff === 'medium' ? 30 : 20,
       autoClosed: true,
-      points: actualDiff === 'easy' ? 100 : actualDiff === 'medium' ? 120 : 150,
+      points: targetDiff === 'easy' ? 100 : targetDiff === 'medium' ? 120 : 150,
       penalty: 25,
       explanation: '',
       hint: '',
@@ -612,17 +606,17 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
             </div>
           </div>
 
-          {/* 4 Difficulty & Overview Tabs: Easy, Medium, Hard, All */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(['easy', 'medium', 'hard', 'all'] as (LevelDifficulty | 'all')[]).map((diff) => {
+          {/* 3 Difficulty Level Cards: Easy, Medium, Hard */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(['easy', 'medium', 'hard'] as LevelDifficulty[]).map((diff) => {
               const isTabActive = activeDifficulty === diff;
-              const lvl = diff !== 'all' ? getLevelForDifficulty(diff as LevelDifficulty) : undefined;
-              const qCount = diff === 'all' ? currentQuestions.length : questions.filter(q => {
+              const lvl = getLevelForDifficulty(diff);
+              const qCount = questions.filter(q => {
                 if (lvl) return q.levelId === lvl.id;
                 return q.difficulty === diff;
               }).length;
 
-              const badgeColors: Record<LevelDifficulty | 'all', { border: string; bg: string; text: string; badge: string }> = {
+              const badgeColors: Record<LevelDifficulty, { border: string; bg: string; text: string; badge: string }> = {
                 easy: {
                   border: 'border-cyan-500/80',
                   bg: 'bg-cyan-950/40',
@@ -640,12 +634,6 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
                   bg: 'bg-rose-950/40',
                   text: 'text-rose-400',
                   badge: 'bg-rose-900/60 text-rose-300'
-                },
-                all: {
-                  border: 'border-indigo-500/80',
-                  bg: 'bg-indigo-950/40',
-                  text: 'text-indigo-400',
-                  badge: 'bg-indigo-900/60 text-indigo-300'
                 }
               };
 
@@ -667,7 +655,7 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider ${colors.badge}`}>
-                        {diff === 'all' ? 'ALL TIERS (ABOVE)' : `${diff.toUpperCase()} LEVEL`}
+                        {diff.toUpperCase()} LEVEL
                       </span>
                       <span className="text-[11px] font-mono text-slate-400 font-bold">
                         {qCount} Questions
@@ -675,17 +663,17 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
                     </div>
 
                     <h4 className="text-base font-bold text-white mb-1">
-                      {diff === 'all' ? 'All Question Posters' : (lvl?.name || `${diff.toUpperCase()} Clearance`)}
+                      {lvl?.name || `${diff.toUpperCase()} Clearance`}
                     </h4>
 
                     <p className="text-xs text-slate-400 line-clamp-2 mb-3">
-                      {diff === 'all' ? 'Consolidated view of all question exhibits and posters across tiers.' : (lvl?.description || `Investigation exhibits configured for ${diff} tier.`)}
+                      {lvl?.description || `Investigation exhibits configured for ${diff} tier.`}
                     </p>
                   </div>
 
                   <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono">
                     <span className="text-slate-400">
-                      {diff === 'all' ? 'All Difficulties' : `Base Limit: ${lvl?.timeLimitSeconds || (diff === 'easy' ? 90 : diff === 'medium' ? 60 : 45)}s`}
+                      Base Limit: {lvl?.timeLimitSeconds || (diff === 'easy' ? 90 : diff === 'medium' ? 60 : 45)}s
                     </span>
 
                     <span className={`font-bold uppercase ${colors.text}`}>
