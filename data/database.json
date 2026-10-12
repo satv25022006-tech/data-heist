@@ -62,6 +62,41 @@
   "players": [],
   "games": [
     {
+      "id": "game-data-heist",
+      "slug": "data-heist",
+      "title": "DATA HEIST: Cyber Forensic Intrusion",
+      "tagline": "Quantum Server Perimeter Breach & Malware Analysis",
+      "description": "An intrusion alarm was triggered at 02:41 AM inside the Apex Quantum Reserve server bank. Intercept rogue packet logs, detect cloned NFC access badges, and decrypt Trojan memory payloads.",
+      "category": "Cyber Forensics",
+      "icon": "fingerprint",
+      "badge": "Featured Event",
+      "totalLevels": 3,
+      "estimatedTime": "15-20 Mins",
+      "rules": [
+        "Each team must clear exhibits one by one under strict countdown timers.",
+        "Easy is open immediately. Medium requires 2 stars on Easy. Hard requires 2 stars on Medium.",
+        "Speed bonus awarded for unused time; wrong answers and hints incur point penalties.",
+        "Upon clearing levels, enter your Name, Register Number, College Name, and Team Name to submit final official records."
+      ]
+    },
+    {
+      "id": "game-blackwood-manor",
+      "slug": "blackwood-manor",
+      "title": "THE BLACKWOOD MANOR CIPHER",
+      "tagline": "Locked Study Crime Dynamics & Chronometer Discrepancy",
+      "description": "Lord Blackwood was found paralyzed in his locked study with his cryptographic safe emptied. Investigate French door shatter ballistics, tea toxicology, and pendulum clock gear jams.",
+      "category": "Forensics & Ballistics",
+      "icon": "shield",
+      "badge": "Victorian Cryptography",
+      "totalLevels": 3,
+      "estimatedTime": "15 Mins",
+      "rules": [
+        "Examine physical evidence diagrams, chemical spectra, and time logs.",
+        "Decisions are finalized per exhibit submission.",
+        "Complete all levels to finalize college symposium ranking."
+      ]
+    },
+    {
       "id": "game-obsidian-syndicate",
       "slug": "obsidian-vault",
       "title": "THE OBSIDIAN SYNDICATE VAULT",
@@ -76,20 +111,7 @@
         "Ground bypass nodes according to optical frequency wavelengths.",
         "Satellite infrared signatures distinguish idling getaway crafts.",
         "Final submission registers official symposium standing."
-      ],
-      "translations": {
-        "ta": {
-          "title": "அப்சிடியன் சிண்டிகேட் சுரங்கப் பெட்டகம்",
-          "tagline": "பயோமெட்ரிக் லேசர் கிரிட் புறக்கணிப்பு & கடல் தப்பித்தல்",
-          "description": "சர்வதேச குற்றக் கும்பல் அப்சிடியன் 7 ஆழமான நிலத்தடி சேமிப்பகத்தை ஊடுருவியது.",
-          "category": "உயர் ஊடுருவல்",
-          "rules": [
-            "லேசர் அதிர்வெண் அலைநீளங்களின் அடிப்படையில் சரியான பைபாஸ் முனைகளை தரையிறக்கவும்.",
-            "செயற்கைக்கோள் அகச்சிவப்பு கையொப்பங்கள் படகுகளை வேறுபடுத்துகின்றன.",
-            "இறுதி சமர்ப்பிப்பு அதிகாரப்பூர்வ நிலையைப் பதிவு செய்கிறது."
-          ]
-        }
-      }
+      ]
     }
   ],
   "levels": [
@@ -328,84 +350,5 @@
   "attempts": [],
   "progress": {},
   "participantSubmissions": [],
-  "auditLogs": [
-    {
-      "id": "audit_1791791792329_552",
-      "actorId": "admin-super-01",
-      "actorName": "Director Vance (Super Admin)",
-      "actorRole": "super_admin",
-      "action": "GAME_DELETED",
-      "targetType": "game",
-      "targetId": "game-blackwood-manor",
-      "details": {
-        "title": "THE BLACKWOOD MANOR CIPHER"
-      },
-      "createdAt": "2026-10-12T07:56:32.329Z"
-    },
-    {
-      "id": "audit_1791791789716_223",
-      "actorId": "admin-super-01",
-      "actorName": "Director Vance (Super Admin)",
-      "actorRole": "super_admin",
-      "action": "GAME_DELETED",
-      "targetType": "game",
-      "targetId": "game-data-heist",
-      "details": {
-        "title": "DATA HEIST: Cyber Forensic Intrusion"
-      },
-      "createdAt": "2026-10-12T07:56:29.716Z"
-    },
-    {
-      "id": "audit_1791791780012_448",
-      "actorId": "admin-super-01",
-      "actorName": "Director Vance (Super Admin)",
-      "actorRole": "super_admin",
-      "action": "SETTINGS_UPDATED",
-      "targetType": "settings",
-      "targetId": "global_settings",
-      "details": {
-        "updatedFields": [
-          "id",
-          "gameTitle",
-          "gameDescription",
-          "logoUrl",
-          "theme",
-          "maintenanceMode",
-          "demoRulesCountdownEnabled",
-          "demoRulesCountdownSeconds",
-          "defaultTimerSeconds",
-          "briefingTimerSeconds",
-          "allowTimerPause",
-          "allowQuestionRetry",
-          "autoSubmitOnTimeout",
-          "timeoutPenaltyPoints",
-          "baseCorrectPoints",
-          "incorrectPenaltyPoints",
-          "hintPenaltyPoints",
-          "speedBonusMultiplier",
-          "soundEffectsEnabled",
-          "supportedLanguages",
-          "defaultLanguage",
-          "rulesText",
-          "updatedAt"
-        ]
-      },
-      "createdAt": "2026-10-12T07:56:20.012Z"
-    },
-    {
-      "id": "audit_1791791772618_123",
-      "actorId": "admin-super-01",
-      "actorName": "Director Vance (Super Admin)",
-      "actorRole": "super_admin",
-      "action": "ALL_DATA_CLEARED",
-      "targetType": "system",
-      "targetId": "all",
-      "details": {
-        "clearedAttempts": 0,
-        "clearedSubmissions": 0,
-        "clearedPlayers": 1
-      },
-      "createdAt": "2026-10-12T07:56:12.618Z"
-    }
-  ]
+  "auditLogs": []
 }
