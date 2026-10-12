@@ -536,6 +536,10 @@ app.delete('/api/admin/games/:id', authMiddleware(writeAdminRoles), (req: Authen
 // ==========================================
 // PLAYER / GAMEPLAY API
 // ==========================================
+app.get('/api/games', (_req, res) => {
+  res.json(db.getGames());
+});
+
 app.get('/api/game/games', (_req, res) => {
   res.json(db.getGames());
 });

@@ -8,217 +8,13 @@ import {
   AuditLog, 
   QuestionPoster,
   GameCard,
-  ParticipantSubmission,
-  AnswerOption
+  ParticipantSubmission
 } from '../types/game.ts';
 import { getSupabaseClient } from './supabaseClient.ts';
 
 const TOKEN_KEY = 'detective_auth_token';
 const PLAYER_ID_KEY = 'detective_player_profile';
 const AGENT_UUID_KEY = 'detective_agent_uuid';
-
-const MOCK_SETTINGS: GameSettings = {
-  id: 'global_settings',
-  gameTitle: 'SMIT CENTRAL FORENSIC CRIME BUREAU',
-  gameDescription: 'Crack cryptographic mysteries, inspect forensic evidence posters, decode syndicate ciphers, and neutralize international threats.',
-  logoUrl: '/infoxtreme_logo.jpg',
-  theme: 'noir-cyber',
-  maintenanceMode: false,
-  demoRulesCountdownEnabled: false,
-  demoRulesCountdownSeconds: 120,
-  defaultTimerSeconds: 60,
-  briefingTimerSeconds: 180,
-  allowTimerPause: true,
-  allowQuestionRetry: false,
-  autoSubmitOnTimeout: true,
-  timeoutPenaltyPoints: 10,
-  baseCorrectPoints: 100,
-  incorrectPenaltyPoints: 25,
-  hintPenaltyPoints: 15,
-  speedBonusMultiplier: 1.5,
-  soundEffectsEnabled: true,
-  supportedLanguages: ['en', 'ta'],
-  defaultLanguage: 'en',
-  rulesText: 'Welcome Agent. You are tasked with solving cyber and forensic investigations. Each case has questions with evidence posters. Read the clues carefully, inspect the evidence dossier, and submit your deduction before the countdown expires.',
-  updatedAt: new Date().toISOString()
-};
-
-const MOCK_GAMES: GameCard[] = [
-  {
-    id: 'game-data-heist',
-    slug: 'the-midnight-cyber-heist',
-    title: 'The Midnight Cyber Heist',
-    tagline: 'Apex Quantum Reserve Incursion',
-    description: 'An intrusion alarm was triggered inside the Apex Quantum Reserve server bank. Identify the attack vector, breach port, and rogue payload.',
-    category: 'Cyber Forensics',
-    icon: 'shield',
-    badge: 'Easy',
-    totalLevels: 1,
-    estimatedTime: '5 mins',
-    rules: ['Inspect evidence posters', 'Answer before timer expires']
-  },
-  {
-    id: 'game-blackwood-manor',
-    slug: 'the-blackwood-manor-cipher',
-    title: 'The Vanishing Cipher at Blackwood Manor',
-    tagline: 'Locked Room Mystery',
-    description: 'Lord Blackwood was found incapacitated in his locked study. His cryptographic journal and safe combinations are missing.',
-    category: 'Physical Forensics',
-    icon: 'fingerprint',
-    badge: 'Medium',
-    totalLevels: 1,
-    estimatedTime: '8 mins',
-    rules: ['Examine physical clues', 'Decode ciphers']
-  },
-  {
-    id: 'game-obsidian-syndicate',
-    slug: 'the-syndicate-subterranean-vault',
-    title: 'The Syndicate Subterranean Vault',
-    tagline: 'High Security Infiltration',
-    description: 'The international syndicate Obsidian 7 breached the deep subterranean reserve. Bypass the optical laser grids and intercept the mole.',
-    category: 'Advanced Vault',
-    icon: 'vault',
-    badge: 'Hard',
-    totalLevels: 1,
-    estimatedTime: '10 mins',
-    rules: ['Bypass optical laser grids', 'Neutralize threat']
-  }
-];
-
-const MOCK_LEVELS = [
-  {
-    id: 'level-01-heist',
-    gameId: 'game-data-heist',
-    slug: 'the-midnight-cyber-heist',
-    levelNumber: 1,
-    displayOrder: 1,
-    name: 'The Midnight Cyber Heist',
-    description: 'An intrusion alarm was triggered inside the Apex Quantum Reserve server bank. Identify the attack vector, breach port, and rogue payload.',
-    difficulty: 'easy' as const,
-    timeLimitSeconds: 90,
-    pointsPerQuestion: 100,
-    passingScore: 180,
-    minStarsRequiredToPass: 1,
-    hintAvailable: true,
-    hintPenalty: 15,
-    incorrectPenalty: 25,
-    speedBonusEnabled: true,
-    speedBonusMax: 50,
-    status: 'published' as const,
-    unlockRequirements: { minStarsFromEasy: 0 },
-    isUnlocked: true,
-    isCompleted: false,
-    highestScore: 0,
-    highestStars: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: 'level-02-manor',
-    gameId: 'game-blackwood-manor',
-    slug: 'the-blackwood-manor-cipher',
-    levelNumber: 2,
-    displayOrder: 2,
-    name: 'The Vanishing Cipher at Blackwood Manor',
-    description: 'Lord Blackwood was found incapacitated in his locked study. His cryptographic journal and safe combinations are missing.',
-    difficulty: 'medium' as const,
-    timeLimitSeconds: 60,
-    pointsPerQuestion: 120,
-    passingScore: 220,
-    minStarsRequiredToPass: 2,
-    hintAvailable: true,
-    hintPenalty: 20,
-    incorrectPenalty: 30,
-    speedBonusEnabled: true,
-    speedBonusMax: 60,
-    status: 'published' as const,
-    unlockRequirements: { minStarsFromEasy: 1 },
-    isUnlocked: true,
-    isCompleted: false,
-    highestScore: 0,
-    highestStars: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: 'level-03-syndicate',
-    gameId: 'game-obsidian-syndicate',
-    slug: 'the-syndicate-subterranean-vault',
-    levelNumber: 3,
-    displayOrder: 3,
-    name: 'The Syndicate Subterranean Vault',
-    description: 'The international syndicate Obsidian 7 breached the deep subterranean reserve. Bypass the optical laser grids and intercept the mole.',
-    difficulty: 'hard' as const,
-    timeLimitSeconds: 45,
-    pointsPerQuestion: 150,
-    passingScore: 300,
-    minStarsRequiredToPass: 2,
-    hintAvailable: true,
-    hintPenalty: 25,
-    incorrectPenalty: 40,
-    speedBonusEnabled: true,
-    speedBonusMax: 75,
-    status: 'published' as const,
-    unlockRequirements: { minStarsFromMedium: 1 },
-    isUnlocked: true,
-    isCompleted: false,
-    highestScore: 0,
-    highestStars: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
-
-const MOCK_QUESTIONS: Question[] = [
-  {
-    id: 'q-1',
-    levelId: 'level-01-heist',
-    title: 'Firewall Egress Analysis',
-    text: 'Which protocol and port entry indicates the primary data exfiltration vector identified in the Apex server firewall logs at 02:41 AM?',
-    answerType: 'multiple_choice',
-    options: [
-      { id: 'opt-1', optionKey: 'A', text: 'HTTPS / Port 443 (Authorized Enterprise Gateway)' },
-      { id: 'opt-2', optionKey: 'B', text: 'SFTP / Port 22 (Encrypted Tunnel via Compromised Service Account)' },
-      { id: 'opt-3', optionKey: 'C', text: 'DNS Tunneling / Port 53 (Data Exfiltration Payload)' },
-      { id: 'opt-4', optionKey: 'D', text: 'ICMP Echo Ping / Protocol 1' }
-    ],
-    correctAnswerSecret: 'C',
-    explanation: 'Analysis of the firewall egress logs revealed abnormal high-volume DNS requests querying external authoritative nameservers with encoded payload chunks.',
-    points: 100,
-    incorrectPenalty: 25,
-    difficulty: 'easy',
-    category: 'Cyber',
-    displayOrder: 1,
-    status: 'published',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    hint: 'Look for protocols traditionally used for domain name resolution that were repurposed for data tunneling.'
-  },
-  {
-    id: 'q-2',
-    levelId: 'level-01-heist',
-    title: 'Memory Dump Persistence',
-    text: 'Examine the server memory dump. What was the exact PID of the rogue persistence daemon spawned during the intrusion?',
-    answerType: 'multiple_choice',
-    options: [
-      { id: 'opt-21', optionKey: 'A', text: 'PID 4092 (systemd-journal)' },
-      { id: 'opt-22', optionKey: 'B', text: 'PID 7312 (kworker/u16:3)' },
-      { id: 'opt-23', optionKey: 'C', text: 'PID 8491 (sys_update_daemon.sh)' },
-      { id: 'opt-24', optionKey: 'D', text: 'PID 1024 (sshd)' }
-    ],
-    correctAnswerSecret: 'C',
-    explanation: 'PID 8491 executed an unauthorized shell script from /tmp/ with root privileges.',
-    points: 100,
-    incorrectPenalty: 25,
-    difficulty: 'easy',
-    category: 'Cyber',
-    displayOrder: 2,
-    status: 'published',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    hint: 'Check processes running out of temporary directory paths.'
-  }
-];
 
 export const authStorage = {
   getToken: () => localStorage.getItem(TOKEN_KEY),
@@ -246,169 +42,6 @@ export const authStorage = {
   clearPlayer: () => localStorage.removeItem(PLAYER_ID_KEY)
 };
 
-function getStaticMockResponse<T>(endpoint: string, options: RequestInit = {}): T {
-  console.log(`[Static Mock API] Serving fallback for: ${endpoint}`);
-  
-  if (endpoint.includes('/api/auth/login')) {
-    let identifier = 'director_vance';
-    try {
-      if (options.body) {
-        const parsed = JSON.parse(options.body as string);
-        if (parsed.identifier) identifier = parsed.identifier;
-      }
-    } catch {}
-    const mockUser: UserProfile = {
-      id: 'admin-super-01',
-      username: identifier,
-      email: `${identifier}@detectivebureau.org`,
-      role: identifier.includes('inspector') ? 'content_admin' : identifier.includes('scully') || identifier.includes('analyst') ? 'analyst' : 'super_admin',
-      displayName: identifier.includes('inspector') ? 'Inspector Chen' : identifier.includes('scully') ? 'Specialist Scully' : 'Director Vance',
-      isBlocked: false,
-      createdAt: new Date().toISOString()
-    };
-    return { token: 'mock-static-jwt-token', user: mockUser } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/auth/player-register')) {
-    let username = 'Agent';
-    try {
-      if (options.body) {
-        const parsed = JSON.parse(options.body as string);
-        if (parsed.username) username = parsed.username;
-      }
-    } catch {}
-    const player: UserProfile = {
-      id: authStorage.getPlayerId(),
-      username,
-      email: `${username}@smit.edu`,
-      role: 'player',
-      displayName: username,
-      isBlocked: false,
-      createdAt: new Date().toISOString()
-    };
-    authStorage.setPlayer(player);
-    return { token: 'mock-player-token', user: player } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/auth/me')) {
-    return { user: authStorage.getPlayer() || { id: authStorage.getPlayerId(), username: 'Agent_Recruit', role: 'player', displayName: 'Agent Recruit' } } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/init')) {
-    return {
-      settings: MOCK_SETTINGS,
-      user: authStorage.getPlayer(),
-      token: 'mock-init-token',
-      unlocks: {},
-      playerProgress: []
-    } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/levels')) {
-    return MOCK_LEVELS as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/questions')) {
-    return MOCK_QUESTIONS as unknown as T;
-  }
-
-  if (endpoint.includes('/api/games')) {
-    return MOCK_GAMES as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/leaderboard')) {
-    return [] as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/attempt/start')) {
-    const attempt: PlayerAttempt = {
-      id: `attempt_${Date.now()}`,
-      playerId: authStorage.getPlayerId(),
-      playerName: authStorage.getPlayer()?.displayName || 'Agent',
-      levelId: 'level-01-heist',
-      levelName: 'The Midnight Cyber Heist',
-      levelDifficulty: 'easy',
-      startedAt: new Date().toISOString(),
-      status: 'in_progress',
-      totalScore: 0,
-      starsEarned: 0,
-      totalTimeSpentSeconds: 0,
-      totalTimeSavedSeconds: 90,
-      accuracyPercentage: 0,
-      hintsUsedCount: 0,
-      isPassed: false,
-      answers: []
-    };
-    return { attempt, questions: MOCK_QUESTIONS.slice(0, 2), token: 'mock-attempt-token' } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/attempt/submit-answer')) {
-    return {
-      isCorrect: true,
-      pointsAwarded: 100,
-      penaltyDeducted: 0,
-      netScore: 100,
-      timeSaved: 45
-    } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/game/attempt/finish')) {
-    const attempt: PlayerAttempt = {
-      id: `attempt_${Date.now()}`,
-      playerId: authStorage.getPlayerId(),
-      playerName: authStorage.getPlayer()?.displayName || 'Agent',
-      levelId: 'level-01-heist',
-      levelName: 'The Midnight Cyber Heist',
-      levelDifficulty: 'easy',
-      startedAt: new Date().toISOString(),
-      completedAt: new Date().toISOString(),
-      status: 'completed',
-      totalScore: 250,
-      starsEarned: 3,
-      totalTimeSpentSeconds: 40,
-      totalTimeSavedSeconds: 50,
-      accuracyPercentage: 100,
-      hintsUsedCount: 0,
-      isPassed: true,
-      answers: []
-    };
-    return {
-      ...attempt,
-      updatedLevels: MOCK_LEVELS.map(l => ({ ...l, isCompleted: true, highestScore: 250, highestStars: 3 }))
-    } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/admin/dashboard')) {
-    return {
-      totalPlayers: 12,
-      totalLevels: 3,
-      activeLevels: 3,
-      lockedLevels: 0,
-      totalQuestions: 4,
-      publishedQuestions: 4,
-      draftQuestions: 0,
-      completedAttempts: 15,
-      recentActivity: [],
-      leaderboard: [],
-      recentAuditLogs: []
-    } as unknown as T;
-  }
-
-  if (endpoint.includes('/api/admin/games') || endpoint.includes('/api/admin/levels') || endpoint.includes('/api/admin/questions')) {
-    return MOCK_GAMES as unknown as T;
-  }
-
-  if (endpoint.includes('/api/admin/settings')) {
-    return MOCK_SETTINGS as unknown as T;
-  }
-
-  if (endpoint.includes('/api/admin/participant-submissions') || endpoint.includes('/api/admin/feedback') || endpoint.includes('/api/admin/results')) {
-    return [] as unknown as T;
-  }
-
-  return { success: true } as unknown as T;
-}
-
 async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = authStorage.getToken();
   const playerId = authStorage.getPlayerId();
@@ -426,31 +59,21 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     headers.set('Content-Type', 'application/json');
   }
 
-  try {
-    const response = await fetch(endpoint, {
-      ...options,
-      headers
-    });
+  const response = await fetch(endpoint, {
+    ...options,
+    headers
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error ${response.status}`);
-    }
-
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      throw new Error(`Non-JSON response received: ${contentType}`);
-    }
-
-    const text = await response.text();
-    if (!text || text.trim().startsWith('<')) {
-      throw new Error(`HTML content received instead of JSON`);
-    }
-
-    return JSON.parse(text) as T;
-  } catch (err) {
-    console.warn(`[API Fetch Warning] Network/JSON parsing error on ${endpoint}. Serving static fallback mock:`, err);
-    return getStaticMockResponse<T>(endpoint, options);
+  if (!response.ok) {
+    let errorMsg = `HTTP Error ${response.status}`;
+    try {
+      const errorJson = await response.json();
+      if (errorJson.error) errorMsg = errorJson.error;
+    } catch {}
+    throw new Error(errorMsg);
   }
+
+  return response.json();
 }
 
 export const api = {
@@ -693,17 +316,12 @@ export const api = {
   },
 
   uploadLogo: async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append('logo', file);
-      const res = await apiFetch<{ logoUrl: string }>('/api/admin/upload-logo', {
-        method: 'POST',
-        body: formData
-      });
-      return res;
-    } catch {
-      return { logoUrl: '/infoxtreme_logo.jpg' };
-    }
+    const formData = new FormData();
+    formData.append('logo', file);
+    return apiFetch<{ logoUrl: string }>('/api/admin/upload-logo', {
+      method: 'POST',
+      body: formData
+    });
   },
 
   getAdminResults: async () => {
@@ -735,13 +353,9 @@ export const api = {
   },
 
   exportResultsCsv: async () => {
-    try {
-      const res = await fetch('/api/admin/results/export');
-      if (!res.ok) throw new Error('Export failed');
-      return res.text();
-    } catch {
-      return 'id,userId,score,stars,status\nmock_1,agent_1,250,3,completed';
-    }
+    const res = await fetch('/api/admin/results/export-csv');
+    if (!res.ok) throw new Error('Export failed');
+    return res.text();
   },
 
   getAuditLogs: async () => {
