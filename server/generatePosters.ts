@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 export function ensureUploadsAndPosters(rootDir: string) {
-  const uploadDir = path.join(rootDir, 'uploads', 'question-posters');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
+  try {
+    const uploadDir = path.join(rootDir, 'uploads', 'question-posters');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
   const posters: Record<string, string> = {
     'poster-heist-network.svg': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%">
@@ -415,5 +416,8 @@ export function ensureUploadsAndPosters(rootDir: string) {
   for (const [filename, content] of Object.entries(posters)) {
     const filePath = path.join(uploadDir, filename);
     fs.writeFileSync(filePath, content.trim(), 'utf8');
+  }
+  } catch (err) {
+    console.warn('Could not write poster files (likely read-only environment like Vercel):', err);
   }
 }
