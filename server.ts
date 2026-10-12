@@ -544,6 +544,11 @@ app.post('/api/admin/clear-all-data', authMiddleware(writeAdminRoles), (req: Aut
   res.json({ success: true, ...result, message: 'All competition data, attempts, submissions, and leaderboard records cleared successfully.' });
 });
 
+app.post('/api/admin/reset-database-to-defaults', authMiddleware(['super_admin']), (req: AuthenticatedRequest, res) => {
+  db.resetDatabaseToDefaults({ id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
+  res.json({ success: true, message: 'Database reset to default factory state.' });
+});
+
 app.delete('/api/admin/clear-all-data', authMiddleware(writeAdminRoles), (req: AuthenticatedRequest, res) => {
   const result = db.clearAllData({ id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
   res.json({ success: true, ...result, message: 'All competition data, attempts, submissions, and leaderboard records cleared successfully.' });

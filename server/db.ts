@@ -23,7 +23,8 @@ import {
   INITIAL_LEVELS, 
   INITIAL_QUESTIONS, 
   INITIAL_PLAYERS, 
-  INITIAL_AUDIT_LOGS 
+  INITIAL_AUDIT_LOGS,
+  INITIAL_POSTERS 
 } from './seedData.ts';
 
 export const INITIAL_GAMES: GameCard[] = [
@@ -171,6 +172,22 @@ export class DatabaseManager {
     this.data = this.loadOrSeedDatabase(bundledPath);
   }
 
+  private getInitialDatabase(): DatabaseSchema {
+    return {
+      settings: DEFAULT_SETTINGS,
+      admins: INITIAL_ADMINS,
+      players: INITIAL_PLAYERS,
+      games: [...INITIAL_GAMES],
+      levels: [...INITIAL_LEVELS],
+      questions: [...INITIAL_QUESTIONS],
+      participantSubmissions: INITIAL_PARTICIPANTS,
+      posters: [...INITIAL_POSTERS],
+      attempts: [],
+      progress: {},
+      auditLogs: INITIAL_AUDIT_LOGS
+    };
+  }
+
   private loadOrSeedDatabase(bundledPath?: string): DatabaseSchema {
     const candidatePath = fs.existsSync(this.dbPath) ? this.dbPath : (bundledPath && fs.existsSync(bundledPath) ? bundledPath : null);
 
@@ -214,56 +231,16 @@ export class DatabaseManager {
       }
     }
 
-    const initialDb: DatabaseSchema = {
-      settings: DEFAULT_SETTINGS,
-      admins: INITIAL_ADMINS,
-      players: INITIAL_PLAYERS,
-      games: INITIAL_GAMES,
-      levels: INITIAL_LEVELS,
-      questions: INITIAL_QUESTIONS,
-      participantSubmissions: INITIAL_PARTICIPANTS,
-      posters: [
-        {
-          id: 'poster-01',
-          questionId: 'q-heist-01',
-          storagePath: 'question-posters/poster-heist-network.svg',
-          publicUrl: '/uploads/question-posters/poster-heist-network.svg',
-          originalFilename: 'apex-network-topology.svg',
-          mimeType: 'image/svg+xml',
-          fileSizeBytes: 14200,
-          caption: 'Forensic Evidence Poster #CYB-01: Apex Firewall Ingress Telemetry',
-          createdAt: '2026-01-01T08:15:00.000Z'
-        },
-        {
-          id: 'poster-02',
-          questionId: 'q-heist-02',
-          storagePath: 'question-posters/poster-rfid-badge.svg',
-          publicUrl: '/uploads/question-posters/poster-rfid-badge.svg',
-          originalFilename: 'rfid-frequency-trace.svg',
-          mimeType: 'image/svg+xml',
-          fileSizeBytes: 12800,
-          caption: 'Forensic Evidence Poster #CYB-02: Cryptographic NFC Frequency Analyzer',
-          createdAt: '2026-01-01T08:25:00.000Z'
-        },
-        {
-          id: 'poster-03',
-          questionId: 'q-heist-03',
-          storagePath: 'question-posters/poster-malware-hex.svg',
-          publicUrl: '/uploads/question-posters/poster-malware-hex.svg',
-          originalFilename: 'svchost-disassembly.svg',
-          mimeType: 'image/svg+xml',
-          fileSizeBytes: 13500,
-          caption: 'Forensic Evidence Poster #CYB-03: Hexadecimal Memory Dump',
-          createdAt: '2026-01-01T08:35:00.000Z'
-        }
-      ],
-      attempts: [],
-      progress: {},
-      auditLogs: INITIAL_AUDIT_LOGS
-    };
+    const initialDb = this.getInitialDatabase();
 
     this.saveData(initialDb);
     return initialDb;
+  }
+
+  resetDatabaseToDefaults(actor: { id: string; name: string; role: UserRole }): void {
+    this.data = this.getInitialDatabase();
+    this.saveData();
+    this.logAudit(actor, 'DATABASE_RESET_TO_DEFAULTS', 'system', 'database', {});
   }
 
   private saveData(dataToSave: DatabaseSchema = this.data) {

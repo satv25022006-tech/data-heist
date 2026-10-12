@@ -533,3 +533,39 @@ export const INITIAL_QUESTIONS: Question[] = [
 export const INITIAL_PLAYERS: UserProfile[] = [];
 
 export const INITIAL_AUDIT_LOGS: AuditLog[] = [];
+
+export const INITIAL_POSTERS: QuestionPoster[] = [
+  {
+    id: 'poster-01',
+    questionId: 'q-heist-01',
+    storagePath: 'question-posters/poster-heist-network.svg',
+    publicUrl: '/uploads/question-posters/poster-heist-network.svg',
+    originalFilename: 'apex-network-topology.svg',
+    mimeType: 'image/svg+xml',
+    fileSizeBytes: 14200,
+    caption: 'Forensic Evidence Poster #CYB-01: Apex Firewall Ingress Telemetry',
+    createdAt: '2026-01-01T08:15:00.000Z'
+  },
+  {
+    id: 'poster-02',
+    questionId: 'q-heist-02',
+    storagePath: 'question-posters/poster-rfid-badge.svg',
+    publicUrl: '/uploads/question-posters/poster-rfid-badge.svg',
+    originalFilename: 'rfid-frequency-trace.svg',
+    mimeType: 'image/svg+xml',
+    fileSizeBytes: 12800,
+    caption: 'Forensic Evidence Poster #CYB-02: Cryptographic NFC Frequency Analyzer',
+    createdAt: '2026-01-01T08:25:00.000Z'
+  },
+  {
+    id: 'poster-03',
+    questionId: 'q-heist-03',
+    storagePath: 'question-posters/poster-malware-hex.svg',
+    publicUrl: '/uploads/question-posters/poster-malware-hex.svg',
+    originalFilename: 'svchost-disassembly.svg',
+    mimeType: 'image/svg+xml',
+    fileSizeBytes: 13500,
+    caption: 'Forensic Evidence Poster #CYB-03: Hexadecimal Memory Dump',
+    createdAt: '2026-01-01T08:35:00.000Z'
+  }
+];

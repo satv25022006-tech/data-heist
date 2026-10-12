@@ -508,10 +508,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           </div>
         )}
 
-        <div className="pt-2 flex items-center justify-between">
-          <div className="text-[11px] text-slate-400 font-mono">
-            Status: Clean state ready for symposium / tournament launch.
-          </div>
+        <div className="flex items-center gap-4 pt-2">
           <button
             type="button"
             onClick={() => {
@@ -522,6 +519,27 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           >
             <Trash2 className="w-4 h-4" />
             <span>Clear All Data</span>
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (confirm('Are you sure you want to reset the database to factory defaults? This will overwrite all custom levels and questions!')) {
+                sounds.playClick();
+                try {
+                  await api.resetDatabaseToDefaults();
+                  sounds.playVictory();
+                  alert('Database reset to factory defaults.');
+                  window.location.reload();
+                } catch (err: any) {
+                  sounds.playWrong();
+                  alert(`Reset failed: ${err.message}`);
+                }
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg shadow-amber-600/20 transition cursor-pointer"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Reset to Defaults</span>
           </button>
         </div>
       </div>

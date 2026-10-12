@@ -505,5 +505,11 @@ export const api = {
     return apiFetch<{ success: boolean; message: string; attemptsCount: number; submissionsCount: number; playersCount: number }>('/api/admin/clear-all-data', {
       method: 'POST'
     });
+  },
+
+  resetDatabaseToDefaults: async () => {
+    return apiFetch<{ success: boolean; message: string }>('/api/admin/reset-database-to-defaults', {
+      method: 'POST'
+    });
   }
 };
