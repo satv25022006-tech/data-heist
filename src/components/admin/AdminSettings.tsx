@@ -523,6 +523,27 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           <button
             type="button"
             onClick={async () => {
+              if (confirm('DANGER: This will permanently wipe all Case Modules, Levels, Questions, and all player/submission data. Proceed?')) {
+                sounds.playClick();
+                try {
+                  await api.clearAllContent();
+                  sounds.playVictory();
+                  alert('All content and data have been permanently cleared.');
+                  window.location.reload();
+                } catch (err: any) {
+                  sounds.playWrong();
+                  alert(`Clear failed: ${err.message}`);
+                }
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-900 hover:bg-rose-800 text-white font-bold text-xs shadow-lg shadow-rose-900/30 transition cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear All Content (WIPE ALL)</span>
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
               if (confirm('Are you sure you want to reset the database to factory defaults? This will overwrite all custom levels and questions!')) {
                 sounds.playClick();
                 try {

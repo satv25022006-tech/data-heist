@@ -511,5 +511,11 @@ export const api = {
     return apiFetch<{ success: boolean; message: string }>('/api/admin/reset-database-to-defaults', {
       method: 'POST'
     });
+  },
+
+  clearAllContent: async () => {
+    return apiFetch<{ success: boolean; message: string }>('/api/admin/clear-all-content', {
+      method: 'POST'
+    });
   }
 };

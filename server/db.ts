@@ -243,6 +243,23 @@ export class DatabaseManager {
     this.logAudit(actor, 'DATABASE_RESET_TO_DEFAULTS', 'system', 'database', {});
   }
 
+  clearAllContent(actor: { id: string; name: string; role: UserRole }): void {
+    this.data = {
+      ...this.data,
+      games: [],
+      levels: [],
+      questions: [],
+      posters: [],
+      attempts: [],
+      participantSubmissions: [],
+      players: [],
+      progress: {},
+      auditLogs: []
+    };
+    this.logAudit(actor, 'CONTENT_CLEARED_ALL', 'system', 'database', {});
+    this.saveData();
+  }
+
   private saveData(dataToSave: DatabaseSchema = this.data) {
     try {
       const dir = path.dirname(this.dbPath);
