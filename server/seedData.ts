@@ -2,7 +2,7 @@ import type { GameSettings, Level, Question, UserProfile, LeaderboardEntry, Audi
 
 export const DEFAULT_SETTINGS: GameSettings = {
   id: 'global_settings',
-  gameTitle: 'DATA HEIST',
+  gameTitle: 'SMIT CENTRAK FORENSIC CRIME BUREAU',
   gameDescription: 'Crack cryptographic mysteries, inspect forensic evidence posters, decode syndicate ciphers, and neutralize international threats.',
   logoUrl: '/infoxtreme_logo.jpg',
   theme: 'noir-cyber',

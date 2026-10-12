@@ -30,7 +30,7 @@ export const INITIAL_GAMES: GameCard[] = [
   {
     id: 'game-data-heist',
     slug: 'data-heist',
-    title: 'DATA HEIST: Cyber Forensic Intrusion',
+    title: 'SMIT CENTRAK FORENSIC CRIME BUREAU: Cyber Forensic Intrusion',
     tagline: 'Quantum Server Perimeter Breach & Malware Analysis',
     description: 'An intrusion alarm was triggered at 02:41 AM inside the Apex Quantum Reserve server bank. Intercept rogue packet logs, detect cloned NFC access badges, and decrypt Trojan memory payloads.',
     category: 'Cyber Forensics',

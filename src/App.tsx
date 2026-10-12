@@ -1269,7 +1269,7 @@ export default function App() {
         <ParticipantSubmitModal
           isOpen={isParticipantModalOpen}
           onClose={() => setIsParticipantModalOpen(false)}
-          gameTitle={selectedGame?.title || 'DATA HEIST: Cyber Forensic Intrusion'}
+          gameTitle={selectedGame?.title || 'SMIT CENTRAK FORENSIC CRIME BUREAU: Cyber Forensic Intrusion'}
           totalScore={lastFinishedAttempt?.totalScore || totalScore || 450}
           totalStars={lastFinishedAttempt?.starsEarned || totalStars || 3}
           accuracyPercentage={lastFinishedAttempt?.accuracyPercentage || 88.5}

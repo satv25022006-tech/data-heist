@@ -60,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
           <span className="font-extrabold tracking-wider text-base sm:text-lg text-cyan-400 group-hover:text-cyan-300 transition-colors uppercase font-mono">
-            DATA HEIST
+            SMIT CENTRAK FORENSIC CRIME BUREAU
           </span>
         </div>
 
