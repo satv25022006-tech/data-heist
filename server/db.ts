@@ -1206,12 +1206,11 @@ export class DatabaseManager {
     if (index === -1) return false;
 
     const game = this.data.games[index];
-    this.data.games.splice(index, 1);
+    
+    // Use clearGameData logic to clean up all associated data (levels, questions, posters, attempts, progress)
+    this.clearGameData(id, actor);
 
-    // Also remove associated levels and questions so data stays cleanly synchronized
-    const associatedLevelIds = new Set(this.data.levels.filter(l => l.gameId === id).map(l => l.id));
-    this.data.levels = this.data.levels.filter(l => l.gameId !== id);
-    this.data.questions = this.data.questions.filter(q => !associatedLevelIds.has(q.levelId));
+    this.data.games.splice(index, 1);
 
     this.logAudit(actor, 'GAME_DELETED', 'game', id, { title: game.title });
     this.saveData();
