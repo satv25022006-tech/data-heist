@@ -586,6 +586,16 @@ app.delete('/api/admin/games/:id', authMiddleware(writeAdminRoles), (req: Authen
   res.json({ success: true });
 });
 
+app.post('/api/admin/games/:id/clear', authMiddleware(writeAdminRoles), (req: AuthenticatedRequest, res) => {
+  db.clearGameData(req.params.id, { id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
+  res.json({ success: true });
+});
+
+app.post('/api/admin/games/:id/reset', authMiddleware(writeAdminRoles), (req: AuthenticatedRequest, res) => {
+  db.resetGameToDefaults(req.params.id, { id: req.user!.id, name: req.user!.displayName, role: req.user!.role });
+  res.json({ success: true });
+});
+
 // ==========================================
 // PLAYER / GAMEPLAY API
 // ==========================================

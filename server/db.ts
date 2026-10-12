@@ -260,6 +260,40 @@ export class DatabaseManager {
     this.saveData();
   }
 
+  clearGameData(gameId: string, actor: { id: string; name: string; role: UserRole }): void {
+    const levelIds = this.data.levels.filter(l => l.gameId === gameId).map(l => l.id);
+    const questionIds = this.data.questions.filter(q => levelIds.includes(q.levelId)).map(q => q.id);
+
+    this.data.levels = this.data.levels.filter(l => l.gameId !== gameId);
+    this.data.questions = this.data.questions.filter(q => !levelIds.includes(q.levelId));
+    this.data.posters = this.data.posters.filter(p => !questionIds.includes(p.questionId));
+    this.data.attempts = this.data.attempts.filter(a => !levelIds.includes(a.levelId));
+    
+    // Clear progress for levels of this game
+    Object.keys(this.data.progress).forEach(playerId => {
+      this.data.progress[playerId] = this.data.progress[playerId].filter(p => !levelIds.includes(p.levelId));
+    });
+
+    this.logAudit(actor, 'GAME_DATA_CLEARED', 'game', gameId, {});
+    this.saveData();
+  }
+
+  resetGameToDefaults(gameId: string, actor: { id: string; name: string; role: UserRole }): void {
+    this.clearGameData(gameId, actor);
+    
+    const gameLevels = INITIAL_LEVELS.filter(l => l.gameId === gameId);
+    const gameQuestionIds = gameLevels.map(l => l.id);
+    const gameQuestions = INITIAL_QUESTIONS.filter(q => gameQuestionIds.includes(q.levelId));
+    const gamePosters = INITIAL_POSTERS.filter(p => gameQuestions.map(q => q.id).includes(p.questionId));
+
+    this.data.levels.push(...gameLevels);
+    this.data.questions.push(...gameQuestions);
+    this.data.posters.push(...gamePosters);
+
+    this.logAudit(actor, 'GAME_RESET_TO_DEFAULTS', 'game', gameId, {});
+    this.saveData();
+  }
+
   clearUserDataOnly(actor: { id: string; name: string; role: UserRole }): void {
     this.data = {
       ...this.data,

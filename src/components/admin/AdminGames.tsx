@@ -550,6 +550,32 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
 
                   <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                     <button
+                      onClick={async () => {
+                        if (confirm(`DANGER: This will clear all data (attempts, progress, etc.) for "${g.title}". Proceed?`)) {
+                          await api.clearGameData(g.id);
+                          onRefresh();
+                          loadLevelsAndQuestions();
+                        }
+                      }}
+                      title="Clear Case Data"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-orange-950 hover:text-orange-400 text-slate-400 transition"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (confirm(`DANGER: This will RESET "${g.title}" to factory defaults (wipes current questions/levels). Proceed?`)) {
+                          await api.resetGameToDefaults(g.id);
+                          onRefresh();
+                          loadLevelsAndQuestions();
+                        }
+                      }}
+                      title="Reset Case to Defaults"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-amber-950 hover:text-amber-400 text-slate-400 transition"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                    <button
                       onClick={() => handleOpenEditCase(g)}
                       title="Edit Case Details"
                       className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition"

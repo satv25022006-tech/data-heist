@@ -244,6 +244,18 @@ export const api = {
     });
   },
 
+  clearGameData: async (gameId: string) => {
+    return apiFetch<{ success: boolean }>(`/api/admin/games/${gameId}/clear`, {
+      method: 'POST'
+    });
+  },
+
+  resetGameToDefaults: async (gameId: string) => {
+    return apiFetch<{ success: boolean }>(`/api/admin/games/${gameId}/reset`, {
+      method: 'POST'
+    });
+  },
+
   getAdminLevels: async () => {
     return apiFetch<Level[]>('/api/admin/levels');
   },
