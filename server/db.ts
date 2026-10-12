@@ -260,6 +260,19 @@ export class DatabaseManager {
     this.saveData();
   }
 
+  clearUserDataOnly(actor: { id: string; name: string; role: UserRole }): void {
+    this.data = {
+      ...this.data,
+      attempts: [],
+      participantSubmissions: [],
+      players: [],
+      progress: {},
+      auditLogs: []
+    };
+    this.logAudit(actor, 'USER_DATA_CLEARED', 'system', 'database', {});
+    this.saveData();
+  }
+
   private saveData(dataToSave: DatabaseSchema = this.data) {
     try {
       const dir = path.dirname(this.dbPath);

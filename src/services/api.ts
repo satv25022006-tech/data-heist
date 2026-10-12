@@ -517,5 +517,11 @@ export const api = {
     return apiFetch<{ success: boolean; message: string }>('/api/admin/clear-all-content', {
       method: 'POST'
     });
+  },
+
+  clearUserDataOnly: async () => {
+    return apiFetch<{ success: boolean; message: string }>('/api/admin/clear-user-data-only', {
+      method: 'POST'
+    });
   }
 };

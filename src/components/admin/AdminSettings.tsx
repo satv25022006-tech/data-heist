@@ -511,6 +511,27 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
         <div className="flex items-center gap-4 pt-2">
           <button
             type="button"
+            onClick={async () => {
+              if (confirm('Are you sure you want to clear ONLY user data (attempts, submissions, progress)? Case Modules, Levels, and Questions will remain intact.')) {
+                sounds.playClick();
+                try {
+                  await api.clearUserDataOnly();
+                  sounds.playVictory();
+                  alert('User data cleared successfully.');
+                  onRefresh();
+                } catch (err: any) {
+                  sounds.playWrong();
+                  alert(`Clear failed: ${err.message}`);
+                }
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-700 hover:bg-orange-600 text-white font-bold text-xs shadow-lg shadow-orange-700/20 transition cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear User Data Only</span>
+          </button>
+          <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setShowClearModal(true);
