@@ -279,18 +279,27 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
     };
 
     try {
+      const url = editingQuestion.id ? `/api/admin/questions/${editingQuestion.id}` : '/api/admin/questions';
+      console.log('Saving question to:', url, 'Payload:', payload);
+      
+      let res;
       if (editingQuestion.id) {
-        await api.updateQuestion(editingQuestion.id, payload);
+        res = await api.updateQuestion(editingQuestion.id, payload);
       } else {
-        await api.createQuestion(payload);
+        res = await api.createQuestion(payload);
       }
+      
       sounds.playCorrect();
       setIsQuestionModalOpen(false);
       setEditingQuestion(null);
       await loadLevelsAndQuestions();
       onRefresh();
     } catch (err: any) {
-      setActionNotice({ type: 'error', message: `Failed to save question: ${err.message}` });
+      console.error('Submission error:', err);
+      setActionNotice({ 
+        type: 'error', 
+        message: `Failed to save question. URL: ${editingQuestion.id ? `/api/admin/questions/${editingQuestion.id}` : '/api/admin/questions'}. Error: ${err.message}` 
+      });
       sounds.playWrong();
     }
   };

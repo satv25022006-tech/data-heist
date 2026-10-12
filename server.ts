@@ -28,6 +28,18 @@ const db = new DatabaseManager(rootDir);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// LOG ALL REGISTERED ROUTES
+app._router.stack.forEach((r: any) => {
+  if (r.route && r.route.path) {
+    console.log(`[ROUTE] ${Object.keys(r.route.methods).join(',').toUpperCase()} ${r.route.path}`);
+  }
+});
+
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.url}`);
+  next();
+});
+
 // Serve static uploads
 app.use('/uploads', express.static(path.join(rootDir, 'uploads')));
 app.use('/uploads', express.static(path.join(rootDir, 'public', 'uploads')));
@@ -608,8 +620,10 @@ app.get('/api/game/games', (_req, res) => {
 });
 
 app.post('/api/game/participant-submission', (req, res) => {
+  console.log('[DEBUG] participant-submission received:', req.body);
   const { name, registerNumber, collegeName, teamName, gameTitle, totalScore, totalStars, accuracyPercentage, totalTimeSpentSeconds, totalTimeSavedSeconds, completedLevelsCount, feedback, rating } = req.body;
   if (!name || !registerNumber || !collegeName) {
+    console.log('[DEBUG] participant-submission validation failed:', req.body);
     return res.status(400).json({ error: 'Name, Register Number, and College Name are required' });
   }
   const sub = db.createParticipantSubmission({
@@ -768,18 +782,23 @@ app.get('/api/game/player-progress', authMiddleware(), (req: AuthenticatedReques
 // ==========================================
 // VITE SPA INTEGRATION
 // ==========================================
+
+// Catch-all for unmatched requests to diagnose 404s
+app.use((req, res, next) => {
+  console.log(`[404 DEBUG] Unmatched request: ${req.method} ${req.url}`);
+  next();
+});
+
 async function startServer() {
   if (process.env.VERCEL) return;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (fs.existsSync(path.join(rootDir, 'dist'))) {
     // Serve production build
     const distPath = path.join(rootDir, 'dist');
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      app.get('*', (_req, res) => {
-        res.sendFile(path.join(distPath, 'index.html'));
-      });
-    }
+    app.use(express.static(distPath));
+    app.get('*', (_req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
   } else {
     // Mount Vite middleware in development
     try {

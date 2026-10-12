@@ -404,7 +404,7 @@ export const api = {
     feedback?: string;
     rating?: number;
   }) => {
-    const res = await apiFetch<{ success: boolean; submission: ParticipantSubmission }>('/api/admin/participant-submissions', {
+    const res = await apiFetch<{ success: boolean; submission: ParticipantSubmission }>('/api/game/participant-submission', {
       method: 'POST',
       body: JSON.stringify(data)
     });

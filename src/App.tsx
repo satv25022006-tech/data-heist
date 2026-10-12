@@ -1158,10 +1158,9 @@ export default function App() {
             )}
 
             {adminTab === 'games' && (
-              <AdminGames
-                games={adminGames}
+              <AdminGames 
+                games={games} 
                 onRefresh={loadAdminData}
-                onNavigateTab={(tab) => setAdminTab(tab)}
               />
             )}
 

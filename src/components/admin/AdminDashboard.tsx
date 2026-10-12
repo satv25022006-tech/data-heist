@@ -52,11 +52,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       icon: FolderKanban, 
       color: 'text-cyan-400', 
       bg: 'bg-cyan-950/40 border-cyan-800/60',
-      action: () => {
-        console.log('Navigating to:', 'games');
-        onNavigateTab('games');
-      },
-      actionLabel: 'Manage Cases'
+      action: () => onNavigateTab('games'),
+      actionLabel: 'Manage Games'
     },
     { 
       label: 'College Team Submissions', 
@@ -100,18 +97,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400">
-            Real-time control of Case Modules, College Team Submissions, symposium leaderboards, and scoring parameters.
+            Real-time control of College Team Submissions, symposium leaderboards, and scoring parameters.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            onClick={() => onNavigateTab('games')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shadow-md shadow-cyan-600/20 transition cursor-pointer"
-          >
-            <FolderKanban className="w-4 h-4" />
-            <span>Case Modules</span>
-          </button>
           <button
             onClick={() => onNavigateTab('participants')}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 transition cursor-pointer"
