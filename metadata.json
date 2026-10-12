@@ -1,0 +1,6 @@
+{
+  "name": "Detective Game & Crime Bureau Admin",
+  "description": "Production-ready detective investigation game with an enterprise admin panel, level and question management, real poster uploads, authoritative scoring, and multi-language support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%">
+      <rect width="900" height="500" fill="#070a14"/>
+      <rect x="40" y="30" width="820" height="45" rx="6" fill="#1e1b4b" stroke="#4338ca"/>
+      <text x="60" y="58" fill="#c084fc" font-family="monospace" font-size="16" font-weight="bold">SATELLITE THERMAL SURVEILLANCE // HARBOR DOCK INFRARED SWEEP</text>
+
+      <!-- Infrared dock imagery -->
+      <rect x="60" y="95" width="760" height="250" rx="8" fill="#020617" stroke="#1f2937"/>
+      
+      <!-- Water cold zone (Deep blue/purple) -->
+      <rect x="80" y="115" width="720" height="210" fill="#172554"/>
+      <text x="100" y="140" fill="#60a5fa" font-family="monospace" font-size="12">SEAWATER (14°C AMBIENT)</text>
+
+      <!-- Boat A: Cold Sea Nymph -->
+      <rect x="120" y="170" width="150" height="60" rx="15" fill="#1e3a8a" stroke="#3b82f6"/>
+      <text x="135" y="195" fill="#93c5fd" font-family="monospace" font-size="11">VESSEL A</text>
+      <text x="135" y="215" fill="#cbd5e1" font-family="monospace" font-size="10">TEMP: 14.2°C (COLD)</text>
+
+      <!-- Boat B: Phantom Hydrofoil (HOT! YELLOW/RED) -->
+      <rect x="340" y="160" width="200" height="80" rx="20" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+      <ellipse cx="500" cy="200" rx="35" ry="25" fill="#eab308"/>
+      <circle cx="510" cy="200" r="15" fill="#ffffff"/>
+      <text x="355" y="190" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">VESSEL B: PHANTOM</text>
+      <text x="355" y="210" fill="#facc15" font-family="monospace" font-size="11">HOT EXHAUST: 88.6°C</text>
+      <text x="355" y="228" fill="#fca5a5" font-family="monospace" font-size="10">TURBINES RUNNING</text>
+
+      <!-- Boat C: Trawler 4 (Cold) -->
+      <rect x="600" y="170" width="160" height="60" rx="15" fill="#1e3a8a" stroke="#3b82f6"/>
+      <text x="615" y="195" fill="#93c5fd" font-family="monospace" font-size="11">VESSEL C: TRAWLER</text>
+      <text x="615" y="215" fill="#cbd5e1" font-family="monospace" font-size="10">TEMP: 15.0°C (COLD)</text>
+
+      <!-- Thermal Gradient Legend -->
+      <rect x="120" y="280" width="640" height="25" rx="4" fill="#0f172a" stroke="#334155"/>
+      <text x="135" y="297" fill="#60a5fa" font-family="monospace" font-size="10">0°C (COLD BLUE)</text>
+      <text x="400" y="297" fill="#22c55e" font-family="monospace" font-size="10">40°C (WARM)</text>
+      <text x="640" y="297" fill="#facc15" font-family="monospace" font-size="10">88°C+ (HOT RED/WHITE)</text>
+
+      <!-- Footer terminal -->
+      <rect x="40" y="365" width="820" height="100" rx="6" fill="#0f172a" stroke="#1e293b"/>
+      <text x="60" y="395" fill="#f43f5e" font-family="monospace" font-size="12">INTEL REPORT: Vessel B (Phantom Hydrofoil) has active twin-diesel turbine spool-up signatures.</text>
+      <text x="60" y="420" fill="#38bdf8" font-family="monospace" font-size="12">The syndicate getaway team is onboard and preparing for maritime extraction.</text>
+    </svg>

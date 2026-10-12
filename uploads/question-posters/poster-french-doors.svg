@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%">
+      <rect width="900" height="500" fill="#0c1222"/>
+      <rect x="40" y="30" width="820" height="45" rx="6" fill="#1e293b" stroke="#334155"/>
+      <text x="60" y="58" fill="#38bdf8" font-family="monospace" font-size="16" font-weight="bold">BLACKWOOD MANOR FORENSICS // EXHIBIT D: FRENCH DOOR GLASS IMPACT VECTORS</text>
+
+      <!-- Floorplan layout -->
+      <rect x="60" y="100" width="360" height="240" fill="#1e1b4b" stroke="#6366f1" stroke-width="2"/>
+      <text x="80" y="130" fill="#c7d2fe" font-family="monospace" font-size="14" font-weight="bold">STUDY INTERIOR</text>
+      <text x="80" y="155" fill="#94a3b8" font-family="monospace" font-size="12">DESK POSITION // LORD BLACKWOOD FOUND</text>
+      <circle cx="200" cy="220" r="14" fill="#f43f5e"/>
+      <text x="160" y="260" fill="#f43f5e" font-family="monospace" font-size="11">POINT OF ORIGIN</text>
+
+      <!-- French Patio Door Line -->
+      <line x1="420" y1="100" x2="420" y2="340" stroke="#facc15" stroke-width="6" stroke-dasharray="10,6"/>
+      <text x="360" y="90" fill="#facc15" font-family="monospace" font-size="12">FRENCH DOORS</text>
+
+      <!-- Terrace Garden Exterior -->
+      <rect x="425" y="100" width="415" height="240" fill="#052e16" stroke="#16a34a" stroke-width="2"/>
+      <text x="450" y="130" fill="#86efac" font-family="monospace" font-size="14" font-weight="bold">TERRACE &amp; GARDEN EXTERIOR</text>
+
+      <!-- Glass Shards dispersion vectors -->
+      <g stroke="#38bdf8" stroke-width="2">
+        <line x1="420" y1="180" x2="580" y2="140"/>
+        <line x1="420" y1="210" x2="680" y2="210"/>
+        <line x1="420" y1="230" x2="620" y2="280"/>
+        <line x1="420" y1="260" x2="540" y2="320"/>
+      </g>
+      <!-- Glass Shards dots -->
+      <circle cx="510" cy="160" r="4" fill="#38bdf8"/><circle cx="560" cy="180" r="3" fill="#38bdf8"/>
+      <circle cx="610" cy="220" r="5" fill="#38bdf8"/><circle cx="650" cy="210" r="4" fill="#38bdf8"/>
+      <circle cx="580" cy="260" r="3" fill="#38bdf8"/><circle cx="530" cy="290" r="4" fill="#38bdf8"/>
+      <circle cx="490" cy="230" r="4" fill="#38bdf8"/>
+
+      <!-- Statistics bar -->
+      <rect x="445" y="150" width="375" height="150" rx="8" fill="#022c22" stroke="#22c55e" opacity="0.9"/>
+      <text x="465" y="180" fill="#4ade80" font-family="monospace" font-size="13" font-weight="bold">BALLISTIC DISPERSION RATIO:</text>
+      <text x="465" y="210" fill="#ffffff" font-family="monospace" font-size="14">EXTERIOR PATIO GLASS: <tspan fill="#facc15" font-weight="bold">92.4% (OUTWARD)</tspan></text>
+      <text x="465" y="235" fill="#ffffff" font-family="monospace" font-size="14">INTERIOR STUDY GLASS: <tspan fill="#94a3b8">7.6%</tspan></text>
+      <text x="465" y="270" fill="#f87171" font-family="monospace" font-size="12" font-weight="bold">DEDUCTION: IMPACT APPLIED FROM INSIDE STUDY!</text>
+
+      <!-- Footer -->
+      <rect x="40" y="360" width="820" height="105" rx="6" fill="#0f172a" stroke="#334155"/>
+      <text x="60" y="390" fill="#cbd5e1" font-family="monospace" font-size="12">CASE FINDING: Suspect claim of outdoor garden intruder smashing glass is refuted by physics.</text>
+      <text x="60" y="415" fill="#38bdf8" font-family="monospace" font-size="12">CONE FRACTURES: Apex of cone points toward the room interior, proving an inside staging job.</text>
+      <text x="60" y="440" fill="#fbbf24" font-family="monospace" font-size="12">STATUS: FAKED BREAK-IN BY INTERNAL RESIDENT.</text>
+    </svg>
