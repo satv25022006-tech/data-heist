@@ -436,9 +436,19 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
       throw new Error(`HTTP Error ${response.status}`);
     }
 
-    return response.json();
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`Non-JSON response received: ${contentType}`);
+    }
+
+    const text = await response.text();
+    if (!text || text.trim().startsWith('<')) {
+      throw new Error(`HTML content received instead of JSON`);
+    }
+
+    return JSON.parse(text) as T;
   } catch (err) {
-    console.warn(`[API Fetch Warning] Network error on ${endpoint}. Serving static fallback mock.`);
+    console.warn(`[API Fetch Warning] Network/JSON parsing error on ${endpoint}. Serving static fallback mock:`, err);
     return getStaticMockResponse<T>(endpoint, options);
   }
 }
