@@ -1,4 +1,4 @@
-import type { GameSettings, Level, Question, UserProfile, LeaderboardEntry, AuditLog } from '../src/types/game.ts';
+import type { GameSettings, Level, Question, UserProfile, LeaderboardEntry, AuditLog, QuestionPoster } from '../src/types/game.ts';
 
 export const DEFAULT_SETTINGS: GameSettings = {
   id: 'global_settings',

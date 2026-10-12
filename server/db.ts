@@ -266,7 +266,7 @@ export class DatabaseManager {
 
     this.data.levels = this.data.levels.filter(l => l.gameId !== gameId);
     this.data.questions = this.data.questions.filter(q => !levelIds.includes(q.levelId));
-    this.data.posters = this.data.posters.filter(p => !questionIds.includes(p.questionId));
+    this.data.posters = this.data.posters.filter(p => p.questionId && !questionIds.includes(p.questionId));
     this.data.attempts = this.data.attempts.filter(a => !levelIds.includes(a.levelId));
     
     // Clear progress for levels of this game
@@ -284,7 +284,7 @@ export class DatabaseManager {
     const gameLevels = INITIAL_LEVELS.filter(l => l.gameId === gameId);
     const gameQuestionIds = gameLevels.map(l => l.id);
     const gameQuestions = INITIAL_QUESTIONS.filter(q => gameQuestionIds.includes(q.levelId));
-    const gamePosters = INITIAL_POSTERS.filter(p => gameQuestions.map(q => q.id).includes(p.questionId));
+    const gamePosters = INITIAL_POSTERS.filter(p => p.questionId && gameQuestions.map(q => q.id).includes(p.questionId));
 
     this.data.levels.push(...gameLevels);
     this.data.questions.push(...gameQuestions);
