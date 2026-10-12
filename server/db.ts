@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { 
   GameSettings, 
   Level, 
@@ -177,9 +178,18 @@ export class DatabaseManager {
   private sessionTokens: Map<string, { userId: string; role: UserRole; expiresAt: number }> = new Map();
 
   constructor(rootDir: string) {
-    const dataDir = path.join(rootDir, 'data');
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    let dataDir = path.join(rootDir, 'data');
+    try {
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+    } catch {
+      dataDir = path.join(os.tmpdir(), 'detective_data');
+      try {
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+      } catch {}
     }
     this.dbPath = path.join(dataDir, 'database.json');
     this.data = this.loadOrSeedDatabase();

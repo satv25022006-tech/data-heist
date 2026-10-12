@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import multer from 'multer';
 import { DatabaseManager } from './server/db.ts';
 import { ensureUploadsAndPosters } from './server/generatePosters.ts';
@@ -9,13 +10,19 @@ import { UserRole, UserProfile } from './src/types/game.ts';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const isVercel = Boolean(process.env.VERCEL);
 const rootDir = process.cwd();
+const dataBaseDir = isVercel ? os.tmpdir() : rootDir;
 
-// Initialize posters and storage
-ensureUploadsAndPosters(rootDir);
+// Initialize posters and storage safely
+try {
+  ensureUploadsAndPosters(rootDir);
+} catch (e) {
+  console.warn('ensureUploadsAndPosters skipped in serverless environment:', e);
+}
 
 // Initialize DB manager
-const db = new DatabaseManager(rootDir);
+const db = new DatabaseManager(dataBaseDir);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -24,9 +31,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.join(rootDir, 'uploads')));
 
 // --- MULTER STORAGE & VALIDATION ---
-const uploadDir = path.join(rootDir, 'uploads', 'question-posters');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+let uploadDir = path.join(dataBaseDir, 'uploads', 'question-posters');
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  uploadDir = path.join(os.tmpdir(), 'uploads', 'question-posters');
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+  } catch {}
 }
 
 const storage = multer.diskStorage({
