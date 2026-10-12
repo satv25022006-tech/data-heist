@@ -52,7 +52,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       icon: FolderKanban, 
       color: 'text-cyan-400', 
       bg: 'bg-cyan-950/40 border-cyan-800/60',
-      action: () => onNavigateTab('games'),
+      action: () => {
+        console.log('Navigating to:', 'games');
+        onNavigateTab('games');
+      },
       actionLabel: 'Manage Cases'
     },
     { 

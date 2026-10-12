@@ -17,7 +17,8 @@ import {
   Sparkles,
   ArrowRight,
   AlertCircle,
-  Image as ImageIcon
+  Image as ImageIcon,
+  RefreshCw
 } from 'lucide-react';
 import { GameCard, Level, Question, LevelDifficulty, AnswerOption } from '../../types/game.ts';
 import { api } from '../../services/api.ts';
@@ -109,6 +110,7 @@ export const AdminGames: React.FC<AdminGamesProps> = ({
   };
 
   useEffect(() => {
+    console.log('AdminGames mounted');
     loadLevelsAndQuestions();
   }, []);
 
