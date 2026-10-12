@@ -46,6 +46,7 @@ import {
   GameCard,
   ParticipantSubmission
 } from './types/game.ts';
+import { DEFAULT_SETTINGS, DEFAULT_GAMES, DEFAULT_LEVELS } from './data/defaultData.ts';
 import { api, authStorage } from './services/api.ts';
 import { sounds, TRANSLATIONS } from './services/soundAndLang.ts';
 import { Navbar } from './components/Navbar.tsx';
@@ -78,7 +79,7 @@ export default function App() {
   // 7. winner: Final victory & official symposium certificate
   const [gameState, setGameState] = useState<'games_list' | 'rules' | 'briefing' | 'levels' | 'investigation' | 'results' | 'winner'>('games_list');
 
-  const [settings, setSettings] = useState<GameSettings | null>(null);
+  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [currentLang, setCurrentLang] = useState<string>(() => localStorage.getItem('detective_lang') || 'en');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => localStorage.getItem('detective_sound') !== 'false');
@@ -92,9 +93,9 @@ export default function App() {
   const [playerInputName, setPlayerInputName] = useState('');
 
   // Data Collections
-  const [games, setGames] = useState<GameCard[]>([]);
-  const [selectedGame, setSelectedGame] = useState<GameCard | null>(null);
-  const [levels, setLevels] = useState<(Level & { isUnlocked: boolean; lockReason?: string; isCompleted: boolean; highestScore: number; highestStars: number })[]>([]);
+  const [games, setGames] = useState<GameCard[]>(DEFAULT_GAMES);
+  const [selectedGame, setSelectedGame] = useState<GameCard | null>(DEFAULT_GAMES[0] || null);
+  const [levels, setLevels] = useState<(Level & { isUnlocked: boolean; lockReason?: string; isCompleted: boolean; highestScore: number; highestStars: number })[]>(DEFAULT_LEVELS);
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
   
   // Admin Data Collections
@@ -117,26 +118,38 @@ export default function App() {
   const loadGameData = async () => {
     try {
       const [init, gamesList, levelsList, board, me, qList] = await Promise.all([
-        api.getGameInit(),
-        api.getGames(),
-        api.getLevels(),
-        api.getLeaderboard(),
-        api.getCurrentUser(),
+        api.getGameInit().catch(() => null),
+        api.getGames().catch(() => null),
+        api.getLevels().catch(() => null),
+        api.getLeaderboard().catch(() => []),
+        api.getCurrentUser().catch(() => null),
         api.getGameQuestions().catch(() => [])
       ]);
 
-      setSettings(init.settings);
-      sounds.enabled = soundEnabled;
-      setGames(gamesList);
-      if (!selectedGame && gamesList.length > 0) {
-        setSelectedGame(gamesList[0]);
+      if (init?.settings) {
+        setSettings(init.settings);
       }
-      setLevels(levelsList);
-      setLeaderboard(board);
-      setCurrentUser(me);
-      setAllQuestions(qList || []);
+      sounds.enabled = soundEnabled;
+      if (gamesList && gamesList.length > 0) {
+        setGames(gamesList);
+        if (!selectedGame) {
+          setSelectedGame(gamesList[0]);
+        }
+      }
+      if (levelsList && levelsList.length > 0) {
+        setLevels(levelsList);
+      }
+      if (board) {
+        setLeaderboard(board);
+      }
+      if (me) {
+        setCurrentUser(me);
+      }
+      if (qList && qList.length > 0) {
+        setAllQuestions(qList);
+      }
     } catch (err) {
-      console.error('Initialization error:', err);
+      console.warn('Initialization error:', err);
     }
   };
 
