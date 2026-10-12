@@ -722,6 +722,8 @@ app.get('/api/game/player-progress', authMiddleware(), (req: AuthenticatedReques
 // VITE SPA INTEGRATION
 // ==========================================
 async function startServer() {
+  if (process.env.VERCEL) return;
+
   if (process.env.NODE_ENV === 'production') {
     // Serve production build
     const distPath = path.join(rootDir, 'dist');
@@ -733,12 +735,16 @@ async function startServer() {
     }
   } else {
     // Mount Vite middleware in development
-    const { createServer: createViteServer } = await import('vite');
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa'
-    });
-    app.use(vite.middlewares);
+    try {
+      const { createServer: createViteServer } = await import('vite');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa'
+      });
+      app.use(vite.middlewares);
+    } catch (e) {
+      console.warn('Vite dev middleware skipped:', e);
+    }
   }
 
   app.listen(PORT, '0.0.0.0', () => {
